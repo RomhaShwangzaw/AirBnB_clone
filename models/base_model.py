@@ -8,11 +8,22 @@ import uuid
 class BaseModel:
     ''' The BaseModel class, the parent class of all other classes '''
 
-    def __init__(self):
-        ''' Initializer method '''
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+    def __init__(self, *args, **kwargs):
+        ''' Initializer method.
+            Can re-create an instance from a dictionary representation.
+        '''
+        if kwargs:
+            for attr, value in kwargs.items():
+                if attr == "__class__":
+                    continue
+                elif attr == "created_at" or attr == "updated_at":
+                    value = datetime.fromisoformat(value)
+
+                setattr(self, attr, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def save(self):
         ''' updates `updated_at` with the current time '''
