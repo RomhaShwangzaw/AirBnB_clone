@@ -2,14 +2,19 @@
 ''' The console module '''
 
 import cmd
-from models.base_model import BaseModel
 from models import storage
+from models.base_model import BaseModel
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
     ''' The HBNB console class '''
 
     prompt = '(hbnb) '
+    __classes = {
+            "BaseModel",
+            "User"
+    }
 
     def emptyline(self):
         ''' an empty line + ENTER shouldn’t execute anything '''
@@ -30,10 +35,10 @@ class HBNBCommand(cmd.Cmd):
         '''
         if not arg:
             print("** class name missing **")
-        elif arg != "BaseModel":
+        elif arg not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
-            obj = BaseModel()
+            obj = arg()
             obj.save()
             print(obj.id)
 
@@ -45,7 +50,7 @@ class HBNBCommand(cmd.Cmd):
         args = parse(arg)
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] != "BaseModel":
+        elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         elif len(args) == 1:
             print("** instance id missing **")
@@ -62,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
         args = parse(arg)
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] != "BaseModel":
+        elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         elif len(args) == 1:
             print("** instance id missing **")
@@ -80,7 +85,7 @@ class HBNBCommand(cmd.Cmd):
         objdict = storage.all()
         if not arg:
             print([str(v) for v in objdict.values()])
-        elif arg != "BaseModel":
+        elif arg not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
             print([str(v) for k, v in objdict.items()
@@ -96,7 +101,7 @@ class HBNBCommand(cmd.Cmd):
 
         if len(args) == 0:
             print("** class name missing **")
-        elif args[0] != "BaseModel":
+        elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         elif len(args) == 1:
             print("** instance id missing **")
