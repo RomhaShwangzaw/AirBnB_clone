@@ -5,6 +5,11 @@ import cmd
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -13,7 +18,12 @@ class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
     __classes = {
             "BaseModel",
-            "User"
+            "User",
+            "State",
+            "City",
+            "Amenity",
+            "Place",
+            "Review"
     }
 
     def emptyline(self):
@@ -48,6 +58,7 @@ class HBNBCommand(cmd.Cmd):
         '''
         objdict = storage.all()
         args = parse(arg)
+
         if len(args) == 0:
             print("** class name missing **")
         elif args[0] not in HBNBCommand.__classes:
@@ -65,6 +76,7 @@ class HBNBCommand(cmd.Cmd):
         '''
         objdict = storage.all()
         args = parse(arg)
+
         if len(args) == 0:
             print("** class name missing **")
         elif args[0] not in HBNBCommand.__classes:
@@ -83,6 +95,7 @@ class HBNBCommand(cmd.Cmd):
         If no class is specified, displays all instantiated objects.
         '''
         objdict = storage.all()
+
         if not arg:
             print([str(v) for v in objdict.values()])
         elif arg not in HBNBCommand.__classes:
