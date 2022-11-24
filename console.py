@@ -30,6 +30,21 @@ class HBNBCommand(cmd.Cmd):
         ''' an empty line + ENTER shouldn’t execute anything '''
         pass
 
+    def default(self, arg):
+        ''' Default behavior for cmd module when input is invalid '''
+        argdict = {
+            "all": self.do_all,
+        }
+        args = arg.split('.')
+        if len(args) == 2:
+            command = args[1][:-1].split('(')
+            if len(command) == 2:
+                call = "{} {}".format(args[0], command[1])
+                if command[0] in argdict:
+                    return argdict[command[0]](call)
+        print("*** Unknown syntax: {}".format(arg))
+        return False
+
     def do_quit(self, arg):
         ''' Quit command to exit the program '''
         return True
@@ -48,7 +63,7 @@ class HBNBCommand(cmd.Cmd):
         elif arg not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
-            obj = arg()
+            obj = eval(arg)()
             obj.save()
             print(obj.id)
 
@@ -90,19 +105,20 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
 
     def do_all(self, arg):
-        ''' Usage: all or all <class>
+        ''' Usage: all or all <class> or <class>.all()
         Display string representations of all instances of a given class.
         If no class is specified, displays all instantiated objects.
         '''
         objdict = storage.all()
+        args = parse(arg)
 
-        if not arg:
+        if len(args) == 0:
             print([str(v) for v in objdict.values()])
-        elif arg not in HBNBCommand.__classes:
+        elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
         else:
             print([str(v) for k, v in objdict.items()
-                  if k.split('.')[0] == arg])
+                  if k.split('.')[0] == args[0]])
 
     def do_update(self, arg):
         ''' Usage: update <class> <id> <attribute name> <attribute value>
@@ -135,7 +151,13 @@ class HBNBCommand(cmd.Cmd):
 
 
 def parse(arg):
-    return arg.split()
+    args = arg.split()
+    args_stripped = []
+    for a in args:
+        a.strip()
+        a = a.strip('\"')
+        args_stripped.append(a)
+    return args_stripped
 
 
 if __name__ == '__main__':
