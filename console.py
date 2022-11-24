@@ -129,8 +129,8 @@ class HBNBCommand(cmd.Cmd):
                   if k.split('.')[0] == args[0]])
 
     def do_update(self, arg):
-        ''' Usage: update <class> <id> <attribute_name> <attribute_value> or
-       <class>.update(<id>, <attribute_name>, <attribute_value>) or
+        ''' Usage: update <class> <id> <attribute_name> "<attribute_value>" or
+       <class>.update(<id>, <attribute_name>, "<attribute_value>") or
        <class>.update(<id>, <dictionary>)
         Update a class instance of a given id by adding or updating
         a given attribute key/value pair.
@@ -140,17 +140,34 @@ class HBNBCommand(cmd.Cmd):
 
         if len(args) == 0:
             print("** class name missing **")
+            return False
         elif args[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
+            return False
         elif len(args) == 1:
             print("** instance id missing **")
+            return False
         elif "{}.{}".format(args[0], args[1]) not in objdict:
             print("** no instance found **")
+            return False
         elif len(args) == 2:
             print("** attribute name missing **")
-        elif len(args) == 3 and type(eval(args[2])) != dict:
-            print("** value missing **")
-        elif (len(args) == 3 and type(eval(args[2])) == dict):
+            return False
+        elif len(args) == 3:
+            try:
+                type(eval(args[2])) != dict
+            except Exception:
+                print("** value missing **")
+                return False
+
+        if len(args) == 4:
+            obj = objdict["{}.{}".format(args[0], args[1])]
+            if hasattr(obj, args[2]):
+                valtype = type(getattr(obj, args[2]))
+                setattr(obj, args[2], valtype(eval(args[3])))
+            else:
+                setattr(obj, args[2], eval(args[3]))
+        elif type(eval(args[2])) == dict:
             obj = objdict["{}.{}".format(args[0], args[1])]
             for k, v in eval(args[2]).items():
                 if hasattr(obj, k):
@@ -158,15 +175,7 @@ class HBNBCommand(cmd.Cmd):
                     setattr(obj, k, type_attr(v))
                 else:
                     setattr(obj, k, v)
-            obj.save()
-        else:
-            obj = objdict["{}.{}".format(args[0], args[1])]
-            if hasattr(obj, args[2]):
-                type_attr = type(getattr(obj, args[2]))
-                setattr(obj, args[2], type_attr(args[3]))
-            else:
-                setattr(obj, args[2], eval(args[3]))
-            obj.save()
+        obj.save()
 
     def do_count(self, arg):
         ''' Usage: count <class> or <class>.count()
@@ -198,10 +207,15 @@ def parse(arg):
     else:
         args = arg.split()
 
+    count = 0
     for a in args:
-        if type(eval(a)) != dict:
-            a = a.replace('\"', '')
-            a = a.replace("\'", "")
+        count += 1
+        try:
+            if type(eval(a)) != dict and count != 4:
+                a = a.replace('\"', '')
+                a = a.replace("\'", "")
+        except Exception:
+            pass
         a.strip()
         args_stripped.append(a)
     return args_stripped
