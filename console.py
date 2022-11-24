@@ -36,13 +36,15 @@ class HBNBCommand(cmd.Cmd):
             "all": self.do_all,
             "count": self.do_count,
             "show": self.do_show,
-            "destroy": self.do_destroy
+            "destroy": self.do_destroy,
+            "update": self.do_update
         }
         args = arg.split('.')
         if len(args) == 2:
             command = args[1][:-1].split('(')
             if len(command) == 2:
                 call = "{} {}".format(args[0], command[1])
+                call = call.replace(',', '')
                 if command[0] in argdict:
                     return argdict[command[0]](call)
         print("*** Unknown syntax: {}".format(arg))
@@ -124,7 +126,8 @@ class HBNBCommand(cmd.Cmd):
                   if k.split('.')[0] == args[0]])
 
     def do_update(self, arg):
-        ''' Usage: update <class> <id> <attribute name> <attribute value>
+        ''' Usage: update <class> <id> <attribute_name> <attribute_value> or
+        <class>.update(<id>, <attribute_name>, <attribute_value>)
         Update a class instance of a given id by adding or updating
         a given attribute key/value pair.
         '''
@@ -149,7 +152,7 @@ class HBNBCommand(cmd.Cmd):
                 type_attr = type(getattr(obj, args[2]))
                 setattr(obj, args[2], type_attr(args[3]))
             else:
-                setattr(obj, args[2], args[3])
+                setattr(obj, args[2], eval(args[3]))
             obj.save()
 
     def do_count(self, arg):
