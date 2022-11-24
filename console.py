@@ -34,7 +34,8 @@ class HBNBCommand(cmd.Cmd):
         ''' Default behavior for cmd module when input is invalid '''
         argdict = {
             "all": self.do_all,
-            "count": self.do_count
+            "count": self.do_count,
+            "show": self.do_show
         }
         args = arg.split('.')
         if len(args) == 2:
