@@ -44,7 +44,10 @@ class HBNBCommand(cmd.Cmd):
             command = args[1][:-1].split('(')
             if len(command) == 2:
                 call = "{} {}".format(args[0], command[1])
-                call = call.replace(',', '')
+                if '{' in call:
+                    call = call.replace(',', '', 1)
+                else:
+                    call = call.replace(',', '')
                 if command[0] in argdict:
                     return argdict[command[0]](call)
         print("*** Unknown syntax: {}".format(arg))
@@ -127,7 +130,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, arg):
         ''' Usage: update <class> <id> <attribute_name> <attribute_value> or
-        <class>.update(<id>, <attribute_name>, <attribute_value>)
+       <class>.update(<id>, <attribute_name>, <attribute_value>) or
+       <class>.update(<id>, <dictionary>)
         Update a class instance of a given id by adding or updating
         a given attribute key/value pair.
         '''
@@ -144,8 +148,17 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
         elif len(args) == 2:
             print("** attribute name missing **")
-        elif len(args) == 3:
+        elif len(args) == 3 and type(eval(args[2])) != dict:
             print("** value missing **")
+        elif (len(args) == 3 and type(eval(args[2])) == dict):
+            obj = objdict["{}.{}".format(args[0], args[1])]
+            for k, v in eval(args[2]).items():
+                if hasattr(obj, k):
+                    type_attr = type(getattr(obj, k))
+                    setattr(obj, k, type_attr(v))
+                else:
+                    setattr(obj, k, v)
+            obj.save()
         else:
             obj = objdict["{}.{}".format(args[0], args[1])]
             if hasattr(obj, args[2]):
@@ -175,11 +188,21 @@ class HBNBCommand(cmd.Cmd):
 
 
 def parse(arg):
-    args = arg.split()
+    ''' Parses arguments and converts them into acceptable formats '''
     args_stripped = []
+
+    if '{' in arg:
+        tmp = arg.split('{')
+        args = tmp[0].split()
+        args.append("{" + tmp[1])
+    else:
+        args = arg.split()
+
     for a in args:
+        if type(eval(a)) != dict:
+            a = a.replace('\"', '')
+            a = a.replace("\'", "")
         a.strip()
-        a = a.strip('\"')
         args_stripped.append(a)
     return args_stripped
 
