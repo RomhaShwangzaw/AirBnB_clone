@@ -34,6 +34,7 @@ class HBNBCommand(cmd.Cmd):
         ''' Default behavior for cmd module when input is invalid '''
         argdict = {
             "all": self.do_all,
+            "count": self.do_count
         }
         args = arg.split('.')
         if len(args) == 2:
@@ -148,6 +149,24 @@ class HBNBCommand(cmd.Cmd):
             else:
                 setattr(obj, args[2], args[3])
             obj.save()
+
+    def do_count(self, arg):
+        ''' Usage: count <class> or <class>.count()
+        Retrieve the number of instances of a given class.
+        '''
+        objdict = storage.all()
+        args = parse(arg)
+
+        if len(args) == 0:
+            print("** class name missing **")
+        elif args[0] not in HBNBCommand.__classes:
+            print("** class doesn't exist **")
+        else:
+            count = 0
+            for k in objdict.keys():
+                if k.split('.')[0] == args[0]:
+                    count += 1
+            print(count)
 
 
 def parse(arg):
