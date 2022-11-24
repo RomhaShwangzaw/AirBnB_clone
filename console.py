@@ -35,7 +35,8 @@ class HBNBCommand(cmd.Cmd):
         argdict = {
             "all": self.do_all,
             "count": self.do_count,
-            "show": self.do_show
+            "show": self.do_show,
+            "destroy": self.do_destroy
         }
         args = arg.split('.')
         if len(args) == 2:
@@ -70,7 +71,7 @@ class HBNBCommand(cmd.Cmd):
             print(obj.id)
 
     def do_show(self, arg):
-        ''' Usage: show <class> <id>
+        ''' Usage: show <class> <id> or <class>.show(<id>)
         Display the string representation of a class instance of a given id.
         '''
         objdict = storage.all()
@@ -88,7 +89,7 @@ class HBNBCommand(cmd.Cmd):
             print(objdict["{}.{}".format(args[0], args[1])])
 
     def do_destroy(self, arg):
-        ''' Usage: destroy <class> <id>
+        ''' Usage: destroy <class> <id> or <class>.destroy(<id>)
         Delete a class instance of a given id.
         '''
         objdict = storage.all()
