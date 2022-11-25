@@ -39,7 +39,7 @@ class HBNBCommand(cmd.Cmd):
             "destroy": self.do_destroy,
             "update": self.do_update
         }
-        args = arg.split('.')
+        args = arg.split('.', 1)
         if len(args) == 2:
             command = args[1][:-1].split('(')
             if len(command) == 2:
@@ -133,7 +133,7 @@ class HBNBCommand(cmd.Cmd):
        <class>.update(<id>, <attribute_name>, "<attribute_value>") or
        <class>.update(<id>, <dictionary>)
         Update a class instance of a given id by adding or updating
-        a given attribute key/value pair.
+        a given attribute key/value pair or dictionary.
         '''
         objdict = storage.all()
         args = parse(arg)

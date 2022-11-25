@@ -76,6 +76,7 @@ class BaseModelTest(unittest.TestCase):
                 'created_at': b1.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f"),
                 'id': b1.id,
                 'my_number': 11,
+                'my_wrong_test': None,
                 'name': "Daniel",
                 'updated_at': b1.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
             }
