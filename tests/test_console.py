@@ -87,9 +87,9 @@ class TestHBNBCommand_help(unittest.TestCase):
             self.assertEqual(h, output.getvalue().strip())
 
     def test_help_update(self):
-        h = ('Usage: update <class> <id> <attribute_name> "<attribute_value>" or'
-             '\n       <class>.update(<id>, <attribute_name>, "<attribute_value'
-             '>") or\n       <class>.update(<id>, <dictionary>)\n        '
+        h = ('Usage: update <class> <id> <attribute_name> "<attribute_value>" '
+             'or\n       <class>.update(<id>, <attribute_name>, "<attribute_'
+             'value>") or\n       <class>.update(<id>, <dictionary>)\n        '
              "Update a class instance of a given id by adding or updating\n   "
              "     a given attribute key/value pair or dictionary.")
         with patch("sys.stdout", new=StringIO()) as output:
@@ -1526,7 +1526,8 @@ class TestHBNBCommand_count(unittest.TestCase):
     def test_count_invalid_class(self):
         with patch("sys.stdout", new=StringIO()) as output:
             self.assertFalse(HBNBCommand().onecmd("MyModel.count()"))
-            self.assertEqual("** class doesn't exist **", output.getvalue().strip())
+            self.assertEqual("** class doesn't exist **",
+                             output.getvalue().strip())
 
     def test_count_object(self):
         with patch("sys.stdout", new=StringIO()) as output:

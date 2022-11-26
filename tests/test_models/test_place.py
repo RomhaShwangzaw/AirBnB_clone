@@ -103,6 +103,5 @@ class TestPlace(unittest.TestCase):
         self.assertIsInstance(Place().longitude, float)
 
 
-
 if __name__ == "__main__":
     unittest.main()

@@ -47,6 +47,5 @@ class TestState(unittest.TestCase):
         self.assertIsInstance(State().name, str)
 
 
-
 if __name__ == "__main__":
     unittest.main()
