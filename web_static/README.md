@@ -1,2 +1,2 @@
 ## web_static
-is a continuation of the AirBnB clone project, where I am supposed to create static web pages.
+is a continuation of the AirBnB clone project, where we will create static web pages, by using HTML and CSS styling.
